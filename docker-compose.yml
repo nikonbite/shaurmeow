@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: shaurmeow-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: shaurmeow
+    volumes:
+      - shaurmeow_postgres_data:/var/lib/postgresql/data
+    networks:
+      - shaurmeow-network
+
+  adminer:
+    image: adminer
+    container_name: shaurmeow-adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - shaurmeow-network
+
+
+
+networks:
+  shaurmeow-network:
+    driver: bridge
+
+volumes:
+  shaurmeow_postgres_data:

@@ -1,0 +1,25 @@
+.react-dadata__input {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.react-dadata__input::placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 1;
+}
+
+.react-dadata__suggestions {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+}
+
+.react-dadata__suggestion--current {
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+} 

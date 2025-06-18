@@ -1,0 +1,5 @@
+docker compose up -d
+bunx prisma generate
+bunx prisma db push
+bun run ./prisma/seed.ts
+bun dev
