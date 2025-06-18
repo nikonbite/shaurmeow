@@ -24,7 +24,18 @@ const generateProductItem = ({
   } as Prisma.ProductItemUncheckedCreateInput;
 };
 
-async function up() {
+async function clear() {
+  // 🚫 Без TRUNCATE — используем deleteMany
+  await prisma.cartItem.deleteMany();
+  await prisma.cart.deleteMany();
+  await prisma.productItem.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.ingredient.deleteMany();
+  await prisma.category.deleteMany();
+  await prisma.user.deleteMany();
+}
+
+async function seed() {
   await prisma.user.createMany({
     data: [
       {
@@ -56,16 +67,17 @@ async function up() {
     data: products,
   });
 
+  // Теперь создаём конкретные шаурмы
   const shaurma1 = await prisma.product.create({
     data: {
       name: 'Классическая шаурма',
       imageUrl: 'https://danar.ru/_next/image?url=https%3A%2F%2Fdanar.ru%2Fi%2Fuploads%2F1732880887-danar-v-lavashe-s-kuriceyjpg.jpg&w=3840&q=75',
       categoryId: 1,
       ingredients: {
-        connect: _ingredients.slice(0, 4),
+        connect: _ingredients.slice(0, 4).map((i) => ({ id: i.id })),
       },
-    }
-  })
+    },
+  });
 
   const shaurma2 = await prisma.product.create({
     data: {
@@ -73,10 +85,10 @@ async function up() {
       imageUrl: 'https://danar.ru/_next/image?url=https%3A%2F%2Fdanar.ru%2Fi%2Fuploads%2F1732880801-danar-v-lavashe-po-derevenski-s-kuriceyjpg.jpg&w=3840&q=75',
       categoryId: 1,
       ingredients: {
-        connect: _ingredients.slice(4, 8),
+        connect: _ingredients.slice(4, 8).map((i) => ({ id: i.id })),
       },
-    }
-  })
+    },
+  });
 
   const shaurma3 = await prisma.product.create({
     data: {
@@ -84,10 +96,10 @@ async function up() {
       imageUrl: 'https://danar.ru/_next/image?url=https%3A%2F%2Fdanar.ru%2Fi%2Fuploads%2F1732880956-danar-v-lavashe-s-kuriceyjpg.jpg&w=3840&q=75',
       categoryId: 1,
       ingredients: {
-        connect: _ingredients.slice(8, 12),
+        connect: _ingredients.slice(8, 12).map((i) => ({ id: i.id })),
       },
-    }
-  })
+    },
+  });
 
   const shaurma4 = await prisma.product.create({
     data: {
@@ -95,10 +107,10 @@ async function up() {
       imageUrl: 'https://danar.ru/_next/image?url=https%3A%2F%2Fdanar.ru%2Fi%2Fuploads%2F1732880819-danar-v-lavashe-po-meksikanski-s-kuriceyjpg.jpg&w=3840&q=75',
       categoryId: 1,
       ingredients: {
-        connect: _ingredients.slice(12, 16),
+        connect: _ingredients.slice(12, 16).map((i) => ({ id: i.id })),
       },
-    }
-  })
+    },
+  });
 
   const shaurma5 = await prisma.product.create({
     data: {
@@ -106,66 +118,23 @@ async function up() {
       imageUrl: 'https://danar.ru/_next/image?url=https%3A%2F%2Fdanar.ru%2Fi%2Fuploads%2F1732880989-danar-v-lavashe-syrnyy-s-kuriceyjpg.jpg&w=3840&q=75',
       categoryId: 1,
       ingredients: {
-        connect: _ingredients.slice(16, 20),
+        connect: _ingredients.slice(16, 20).map((i) => ({ id: i.id })),
       },
-    }
-  })
-
+    },
+  });
 
   await prisma.productItem.createMany({
     data: [
-      // Шаурма "Классическая"
-      generateProductItem({ productId: shaurma1.id, shaurmaType: 1, size: 'M' }),
-      generateProductItem({ productId: shaurma1.id, shaurmaType: 1, size: 'L' }),
-      generateProductItem({ productId: shaurma1.id, shaurmaType: 1, size: 'XL' }),
-      generateProductItem({ productId: shaurma1.id, shaurmaType: 2, size: 'M' }),
-      generateProductItem({ productId: shaurma1.id, shaurmaType: 2, size: 'L' }),
-      generateProductItem({ productId: shaurma1.id, shaurmaType: 2, size: 'XL' }),
-
-      // Шаурма "Шаурма с курицей и грибами"
-      generateProductItem({ productId: shaurma2.id, shaurmaType: 1, size: 'M' }),
-      generateProductItem({ productId: shaurma2.id, shaurmaType: 1, size: 'L' }),
-      generateProductItem({ productId: shaurma2.id, shaurmaType: 1, size: 'XL' }),
-      generateProductItem({ productId: shaurma2.id, shaurmaType: 2, size: 'M' }),
-      generateProductItem({ productId: shaurma2.id, shaurmaType: 2, size: 'L' }),
-      generateProductItem({ productId: shaurma2.id, shaurmaType: 2, size: 'XL' }),
-
-      // Шаурма "Шаурма с говядиной и овощами"
-      generateProductItem({ productId: shaurma3.id, shaurmaType: 1, size: 'M' }),
-      generateProductItem({ productId: shaurma3.id, shaurmaType: 1, size: 'L' }),
-      generateProductItem({ productId: shaurma3.id, shaurmaType: 1, size: 'XL' }),
-      generateProductItem({ productId: shaurma3.id, shaurmaType: 2, size: 'M' }),
-      generateProductItem({ productId: shaurma3.id, shaurmaType: 2, size: 'L' }),
-      generateProductItem({ productId: shaurma3.id, shaurmaType: 2, size: 'XL' }),
-
-      // Шаурма "Шаурма с креветками и авокадо"
-      generateProductItem({ productId: shaurma4.id, shaurmaType: 1, size: 'L' }),
-      generateProductItem({ productId: shaurma4.id, shaurmaType: 1, size: 'XL' }),
-      generateProductItem({ productId: shaurma4.id, shaurmaType: 2, size: 'M' }),
-      generateProductItem({ productId: shaurma4.id, shaurmaType: 2, size: 'L' }),
-      generateProductItem({ productId: shaurma4.id, shaurmaType: 2, size: 'XL' }),
-
-
-      // Шаурма "Шаурма с индейкой и клюквой"
-      generateProductItem({ productId: shaurma5.id, shaurmaType: 1, size: 'M' }),
-      generateProductItem({ productId: shaurma5.id, shaurmaType: 1, size: 'L' }),
-      generateProductItem({ productId: shaurma5.id, shaurmaType: 1, size: 'XL' }),
-      generateProductItem({ productId: shaurma5.id, shaurmaType: 2, size: 'M' }),
-      generateProductItem({ productId: shaurma5.id, shaurmaType: 2, size: 'L' }),
-      generateProductItem({ productId: shaurma5.id, shaurmaType: 2, size: 'XL' }),
-
-      // Остальные продукты
-      generateProductItem({ productId: 1 }),
-      generateProductItem({ productId: 2 }),
-      generateProductItem({ productId: 3 }),
-      generateProductItem({ productId: 4 }),
-      generateProductItem({ productId: 5 }),
-      generateProductItem({ productId: 6 }),
-      generateProductItem({ productId: 7 }),
-      generateProductItem({ productId: 8 }),
-      generateProductItem({ productId: 9 }),
-      generateProductItem({ productId: 10 }),
-      generateProductItem({ productId: 11 }),
+      ...[
+        shaurma1, shaurma2, shaurma3, shaurma4, shaurma5
+      ].flatMap(shaurma => [
+        generateProductItem({ productId: shaurma.id, shaurmaType: 1, size: 'M' }),
+        generateProductItem({ productId: shaurma.id, shaurmaType: 1, size: 'L' }),
+        generateProductItem({ productId: shaurma.id, shaurmaType: 1, size: 'XL' }),
+        generateProductItem({ productId: shaurma.id, shaurmaType: 2, size: 'M' }),
+        generateProductItem({ productId: shaurma.id, shaurmaType: 2, size: 'L' }),
+        generateProductItem({ productId: shaurma.id, shaurmaType: 2, size: 'XL' }),
+      ]),
     ],
   });
 
@@ -196,31 +165,17 @@ async function up() {
   });
 }
 
-async function down() {
-  await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "Category" RESTART IDENTITY CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "Cart" RESTART IDENTITY CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "CartItem" RESTART IDENTITY CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "Ingredient" RESTART IDENTITY CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "Product" RESTART IDENTITY CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "ProductItem" RESTART IDENTITY CASCADE`;
-}
-
 async function main() {
   try {
-    await down();
-    await up();
+    await clear();
+    await seed();
+    console.log('✅ Seeding done!');
   } catch (e) {
     console.error(e);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+main();
